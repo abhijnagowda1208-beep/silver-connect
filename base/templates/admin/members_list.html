@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{ title }}</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #f4f6f9;
+            padding: 30px;
+        }
+
+        table {
+            width: 100%;
+            background: #fff;
+            border-radius: 12px;
+            border-collapse: collapse;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        th, td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        th {
+            background: #2575fc;
+            color: #fff;
+        }
+
+        tr:hover {
+            background: #f1f5ff;
+        }
+
+        a {
+            text-decoration: none;
+            color: #2575fc;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+<h2>{{ title }}</h2>
+
+<table>
+    <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Status</th>
+    </tr>
+
+    {% for user in users %}
+    <tr>
+        <td>{{ user.username }}</td>
+        <td>{{ user.email }}</td>
+        <td>
+            {% if user.is_active %}
+                ✅ Active
+            {% else %}
+                ❌ Inactive
+            {% endif %}
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
+<br>
+<a href="{% url 'admin_dashboard' %}">⬅ Back to Dashboard</a>
+
+</body>
+</html>

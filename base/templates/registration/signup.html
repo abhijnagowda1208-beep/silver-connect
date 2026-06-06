@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center bg-light-subtle py-5">
+    <div class="container" style="max-width: 1000px;">
+
+        <!-- SIGN-UP CARD -->
+        <div class="card border-0 shadow-lg rounded-5 overflow-hidden">
+            <div class="row g-0">
+
+                <!-- LEFT INFO PANEL -->
+                <div class="col-lg-5 d-none d-lg-flex bg-primary bg-gradient flex-column align-items-center justify-content-center p-5 text-white text-center position-relative overflow-hidden">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-pattern opacity-10"></div>
+
+                    <div class="position-relative z-1">
+                        <div class="bg-white text-primary rounded-circle p-4 mb-4 d-inline-block shadow-sm">
+                            <i class="bi bi-person-plus-fill display-4"></i>
+                        </div>
+                        <h2 class="fw-bold mb-3 display-6">Join SilverConnect</h2>
+                        <p class="lead mb-4 opacity-75">Create your account to track wellness, join events, and stay connected with your loved ones.</p>
+
+                        <div class="d-flex flex-column gap-3 text-start px-4 mt-4">
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                                <span>Wellness Tracking</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                                <span>Community Events</span>
+                            </div>
+                            <div class="d-flex align-items-center">
+                                <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                                <span>Emergency SOS</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- RIGHT FORM PANEL -->
+                <div class="col-lg-7 bg-white p-5">
+                    <div class="d-flex align-items-center justify-content-between mb-4">
+                        <h3 class="fw-bold text-dark mb-0">Create Account</h3>
+                        <a href="/" class="text-decoration-none text-muted small d-lg-none">
+                            <i class="bi bi-arrow-left me-1"></i> Home
+                        </a>
+                    </div>
+
+                    <form method="post" novalidate class="needs-validation">
+                        {% csrf_token %}
+
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger border-0 rounded-3 mb-4 shadow-sm bg-danger-subtle text-danger d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                                {{ form.non_field_errors|striptags }}
+                            </div>
+                        {% endif %}
+
+                        {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-bold small text-uppercase text-secondary ls-1">
+                                {{ field.label }}
+                            </label>
+
+                            <div class="input-wrapper">
+                                {{ field }}
+                            </div>
+
+                            {% if field.help_text %}
+                                <div class="form-text text-muted small mt-1">
+                                    <i class="bi bi-info-circle me-1"></i>{{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+
+                            {% if field.errors %}
+                                <div class="text-danger small mt-1 fw-bold d-flex align-items-center">
+                                    <i class="bi bi-x-circle me-1"></i> {{ field.errors|striptags }}
+                                </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-lg hover-scale fw-bold py-3">
+                                Create Account
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-4 text-center">
+                        <p class="text-muted small">
+                            Already a member? <a href="{% url 'login' %}" class="text-primary fw-bold text-decoration-none">Sign In</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="text-center mt-4">
+            <small class="text-muted">
+                By creating an account, you agree to our <a href="#" class="text-decoration-none text-muted fw-bold">Terms</a> and <a href="#" class="text-decoration-none text-muted fw-bold">Privacy Policy</a>.
+            </small>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // Apply Bootstrap form-control classes dynamically for all input fields
+    document.addEventListener("DOMContentLoaded", function() {
+        var inputs = document.querySelectorAll('input, select, textarea');
+        inputs.forEach(function(input) {
+            if (input.type !== 'checkbox' && input.type !== 'radio') {
+                input.classList.add('form-control', 'bg-light', 'border-0', 'ps-3', 'py-2');
+            } else {
+                input.classList.add('form-check-input');
+            }
+        });
+    });
+</script>
+
+<style>
+    /* --- Background & Layout --- */
+    .bg-light-subtle { background-color: #f8f9fa; }
+    .bg-gradient { background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%); }
+    .ls-1 { letter-spacing: 1px; }
+
+    /* --- Pattern Overlay --- */
+    .bg-pattern {
+        background-image: radial-gradient(#ffffff 1px, transparent 1px);
+        background-size: 20px 20px;
+    }
+
+    /* --- Hover & Interaction --- */
+    .hover-scale { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .hover-scale:hover { transform: scale(1.03); }
+
+    /* --- Input Focus Styling --- */
+    .form-control:focus {
+        background-color: white !important;
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15);
+        border: 1px solid #dee2e6 !important;
+    }
+
+    .form-text ul { padding-left: 1.2rem; margin-bottom: 0; }
+</style>
+{% endblock %}

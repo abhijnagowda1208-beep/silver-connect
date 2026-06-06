@@ -1,0 +1,613 @@
+/* ============================================================================
+   SILVERCONNECT - GLOBAL STYLES
+   ============================================================================ */
+
+/* ============================================================================
+   1. PROFILE SECTION STYLING
+   ============================================================================ */
+
+/* Profile Banner (Header Background) */
+.profile-banner {
+    background: linear-gradient(135deg, #20c997 0%, #0d9dcc 100%);
+    min-height: 200px;
+    width: 100%;
+    border-radius: 1rem;
+}
+
+/* Profile Picture Container */
+.profile-pic {
+    width: 150px;
+    height: 150px;
+    min-width: 150px;
+    border-radius: 15px;
+    object-fit: contain;
+    display: block;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Empty Profile Picture Placeholder */
+.profile-pic.bg-white {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 4rem;
+    font-weight: bold;
+    color: #198754;
+    background: white;
+}
+
+/* Profile Card Container */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+/* Ensure card body has proper layout */
+.card-body {
+    display: flex;
+    flex-direction: column;
+}
+
+/* Profile section row - ensure proper wrapping */
+.card-body .row {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+}
+
+.card-body .row.align-items-end {
+    align-items: flex-end;
+    gap: 2rem;
+    margin-top: -3rem;
+}
+
+/* Ensure columns within profile card don't overlap */
+.card-body .col-lg-auto {
+    flex: 0 0 auto;
+    width: auto;
+    z-index: 10;
+}
+
+.card-body .col-lg {
+    flex: 1 1 auto;
+    width: auto;
+    min-width: 200px;
+    z-index: 5;
+}
+
+.card-body .col-lg-auto:last-child {
+    flex: 0 0 auto;
+    width: auto;
+    margin-left: auto;
+}
+
+/* ============================================================================
+   2. PROFILE HEADER LAYOUT - TEXT & SPACING
+   ============================================================================ */
+
+/* Profile Header Container */
+.profile-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+/* User Name Styling */
+.profile-header h1 {
+    line-height: 1.2;
+    letter-spacing: -0.5px;
+    margin-bottom: 0.5rem;
+}
+
+/* Profile Info Row (Location + Member Since) */
+.profile-info-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    align-items: center;
+    font-size: 0.95rem;
+}
+
+.profile-info-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6c757d;
+}
+
+.profile-info-item i {
+    font-size: 1rem;
+}
+
+/* Bio Styling */
+.profile-bio {
+    color: #495057;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-top: 0.5rem;
+    max-width: 600px;
+}
+
+/* ============================================================================
+   3. RESPONSIVE LAYOUT FIXES - Bootstrap Overrides
+   ============================================================================ */
+
+/* Fix Bootstrap row spacing for profile layout */
+.row.align-items-end {
+    row-gap: 1.5rem;
+}
+
+/* Desktop Layout (>= 992px) */
+@media (min-width: 992px) {
+    /* Increase gap between columns on large screens */
+    .row.align-items-end {
+        --bs-gutter-x: 3rem;
+    }
+
+    /* Profile pic column should not shrink */
+    .col-lg-auto:has(.profile-pic) {
+        flex-shrink: 0;
+        margin-right: 2rem;
+    }
+
+    /* User info column should expand and have proper spacing */
+    .col-lg:has(h1) {
+        flex: 1 1 auto;
+        min-width: 0;
+        padding-left: 0;
+    }
+
+    .profile-info-row {
+        justify-content: flex-start;
+        margin-bottom: 0.5rem;
+    }
+
+    /* Ensure text doesn't wrap awkwardly */
+    .profile-header h1 {
+        font-size: 2rem;
+        white-space: normal;
+    }
+}
+
+/* Tablet Layout (768px - 991px) */
+@media (min-width: 768px) and (max-width: 991px) {
+    .profile-banner {
+        min-height: 150px;
+    }
+
+    .profile-pic {
+        width: 120px;
+        height: 120px;
+        min-width: 120px;
+    }
+
+    .profile-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .profile-info-row {
+        gap: 1rem;
+        font-size: 0.9rem;
+    }
+
+    .row.align-items-end {
+        --bs-gutter-x: 2rem;
+    }
+}
+
+/* Mobile Layout (< 768px) */
+@media (max-width: 767px) {
+    .profile-banner {
+        min-height: 120px;
+        margin-bottom: 1.5rem;
+    }
+
+    .profile-pic {
+        width: 100px;
+        height: 100px;
+        min-width: 100px;
+        margin: 0 auto;
+    }
+
+    .col-lg-auto {
+        text-align: center;
+        width: 100%;
+        margin-right: 0 !important;
+    }
+
+    .col-lg {
+        text-align: center;
+        width: 100%;
+        margin-top: 1rem !important;
+        margin-left: 0 !important;
+        padding-left: 0 !important;
+    }
+
+    .profile-header h1 {
+        font-size: 1.5rem;
+        margin-bottom: 0.75rem;
+    }
+
+    .profile-info-row {
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+        justify-content: center;
+        margin: 1rem 0;
+    }
+
+    .profile-bio {
+        text-align: center;
+    }
+
+    .profile-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .profile-actions .btn {
+        width: 100%;
+    }
+
+    .row.align-items-end {
+        --bs-gutter-x: 1rem;
+    }
+}
+
+/* ============================================================================
+   4. PROFILE CARDS GRID
+   ============================================================================ */
+
+.card-hover-effect {
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+
+.card-hover-effect:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12) !important;
+}
+
+.card-header {
+    background: white !important;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.card-header h5 {
+    color: #212529;
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* ============================================================================
+   5. BADGE & STATUS STYLING
+   ============================================================================ */
+
+.badge {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+.badge-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 1.2rem;
+    height: 1.2rem;
+    border-radius: 50%;
+    background: #20c997;
+    border: 3px solid white;
+}
+
+/* ============================================================================
+   6. BUTTON STYLING
+   ============================================================================ */
+
+.btn {
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.btn-outline-primary {
+    color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    color: white;
+    transform: translateY(-2px);
+}
+
+.btn-light {
+    transition: all 0.2s ease;
+}
+
+.btn-light:hover {
+    background-color: #e2e6ea;
+    transform: translateY(-2px);
+}
+
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+
+.hover-scale:hover {
+    transform: scale(1.02);
+}
+
+/* ============================================================================
+   7. FORM STYLING
+   ============================================================================ */
+
+.form-control,
+.form-select,
+textarea.form-control {
+    border: 1px solid #e9ecef;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    font-size: 1rem;
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea.form-control:focus {
+    border-color: #0d6efd;
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    color: #6c757d;
+    font-size: 1.1rem;
+}
+
+.form-text {
+    font-size: 0.85rem;
+    color: #6c757d;
+}
+
+/* ============================================================================
+   8. MEDICAL ID CARD STYLING
+   ============================================================================ */
+
+.bg-dark.text-white {
+    background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+}
+
+.bg-dark.text-white .card-body {
+    padding: 2rem;
+}
+
+.card-body .display-4 {
+    font-weight: 700;
+    color: #20c997;
+}
+
+.card-body .text-white-50 {
+    opacity: 0.7;
+    font-weight: 500;
+}
+
+/* ============================================================================
+   9. UTILITY CLASSES
+   ============================================================================ */
+
+/* Text Utilities */
+.text-muted {
+    color: #6c757d !important;
+}
+
+.text-secondary {
+    color: #6c757d !important;
+}
+
+.fw-bold {
+    font-weight: 600 !important;
+}
+
+/* Spacing Adjustments - Mobile & Tablet */
+@media (max-width: 991.98px) {
+    .ms-lg-3 {
+        margin-left: 0 !important;
+    }
+    
+    .mt-lg-0 {
+        margin-top: 1rem !important;
+    }
+}
+
+/* Spacing Adjustments - Desktop */
+@media (min-width: 992px) {
+    .ms-lg-3 {
+        margin-left: 2.5rem !important;
+        margin-right: 0 !important;
+    }
+    
+    .mt-lg-0 {
+        margin-top: 0 !important;
+    }
+}
+
+/* Padding for containers */
+.px-5 {
+    padding-left: 2rem;
+    padding-right: 2rem;
+}
+
+.pb-5 {
+    padding-bottom: 2rem;
+}
+
+@media (max-width: 767px) {
+    .px-5 {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .pb-5 {
+        padding-bottom: 1.5rem;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+    .px-5 {
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+}
+
+/* ============================================================================
+   10. BACKGROUND COLORS
+   ============================================================================ */
+
+.bg-light-subtle {
+    background-color: #f8f9fa;
+}
+
+.bg-light {
+    background-color: #f8f9fa;
+}
+
+/* ============================================================================
+   11. SHADOW CLASSES
+   ============================================================================ */
+
+.shadow-sm {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.175) !important;
+}
+
+/* ============================================================================
+   12. PROFILE EDIT FORM STYLING
+   ============================================================================ */
+
+.card.border-0.shadow-lg {
+    border-radius: 1rem !important;
+}
+
+.card-header.bg-primary.bg-gradient {
+    background: linear-gradient(135deg, #0d6efd 0%, #026ee0 100%);
+}
+
+.card-header .bi-person-gear {
+    opacity: 0.3;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    color: #495057;
+}
+
+.input-group.rounded-3 {
+    overflow: hidden;
+    border-radius: 0.5rem;
+}
+
+.input-group-lg .form-control,
+.input-group-lg .input-group-text {
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+}
+
+/* ============================================================================
+   13. CONTACT PHOTO PREVIEW
+   ============================================================================ */
+
+.rounded-circle {
+    border-radius: 50%;
+}
+
+.object-fit-cover {
+    object-fit: cover;
+}
+
+/* ============================================================================
+   14. RESPONSIVE CONTAINER ADJUSTMENTS
+   ============================================================================ */
+
+.container {
+    max-width: 1200px;
+}
+
+@media (max-width: 576px) {
+    .container-fluid {
+        padding: 0;
+    }
+
+    .card {
+        border-radius: 0.75rem;
+        margin-bottom: 1rem;
+    }
+}
+
+/* ============================================================================
+   15. ADDITIONAL HOVER EFFECTS
+   ============================================================================ */
+
+.hover-arrow {
+    transition: all 0.2s ease;
+}
+
+.hover-arrow:hover {
+    color: #0d6efd !important;
+    transform: translateX(-3px);
+}
+
+.hover-lift {
+    transition: all 0.3s ease;
+    transform: translateY(0);
+}
+
+.hover-lift:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* ============================================================================
+   16. ACCESSIBILITY & FOCUS STATES
+   ============================================================================ */
+
+a:focus,
+button:focus,
+input:focus {
+    outline: 2px solid #0d6efd;
+    outline-offset: 2px;
+}
+
+.btn:focus {
+    outline: none;
+}
+
+/* ============================================================================
+   17. VISIBILITY UTILITY
+   ============================================================================ */
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}

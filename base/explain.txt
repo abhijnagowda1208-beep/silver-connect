@@ -1,0 +1,150 @@
+## 1️⃣ Base App (Django Project + App)
+
+A Django project contains:
+
+* **Backend** → Python (Django)
+* **Frontend** → HTML (Templates)
+
+Django follows **MVT architecture**:
+
+* **Model** → Database
+* **View** → Business logic (CRUD)
+* **Template** → HTML (UI)
+
+---
+
+## 2️⃣ `views.py` — Business Logic (CRUD)
+
+* Contains **Python functions **
+* Handles **Create, Read, Update, Delete**
+* Connects:
+
+  * **models.py** (database)
+  * **templates (HTML pages)**
+
+### Example responsibilities:
+
+* Fetch data from database
+* Insert new records
+* Update existing records
+* Delete records
+* Send data to HTML pages
+
+📌 Each CRUD operation usually maps to **one HTML page**
+(Example: create.html, list.html, update.html, delete.html)
+
+---
+
+## 3️⃣ `urls.py` — URL Routing
+
+* Defines **routes (links)** for your app
+* Maps **URL paths** to **view functions**
+
+### Example:
+
+```python
+path('create/', views.create_data)
+```
+
+📌 Purpose:
+
+* When user opens a URL → Django calls the correct view
+* Acts like a **traffic controller**
+
+---
+
+## 4️⃣ `templates/` — Frontend (HTML)
+
+* Contains all **HTML files**
+* Used to display data to users
+* Can receive data from `views.py`
+
+### Example files:
+
+* `create.html`
+* `read.html`
+* `update.html`
+* `delete.html`
+
+📌 Django Template Engine allows:
+
+* Displaying dynamic data
+* Using loops, conditions, variables
+
+---
+
+## 5️⃣ `models.py` — Database Structure (ORM)
+
+* Contains **Python classes**
+* Each class represents a **database table**
+* Each variable represents a **column**
+
+### ORM (Object Relational Mapping)
+
+* Converts **Python code → SQL queries**
+* You don’t write SQL manually
+
+📌 Example:
+
+```python
+class Student(models.Model):
+    name = models.CharField(max_length=100)
+```
+
+➡️ Django automatically creates SQL queries for SQLite3
+
+---
+
+## 6️⃣ Database — `sqlite3`
+
+* Default database in Django
+* File-based database
+* Good for **practice and small projects**
+
+📌 Stored as:
+
+```
+db.sqlite3
+```
+
+---
+
+## 7️⃣ `admin.py` — Admin Panel & CRUD Practice
+
+* Registers models to Django Admin
+* Provides **ready-made UI** for CRUD
+* No need to write HTML for admin
+
+### Example:
+
+```python
+admin.site.register(Student)
+```
+
+📌 Purpose:
+
+* Quickly add, update, delete records
+* Mainly used for **testing and management**
+
+---
+
+## 8️⃣ Overall Flow (How Everything Works)
+
+1. User opens a URL
+2. `urls.py` → redirects to `views.py`
+3. `views.py` → interacts with `models.py` (ORM)
+4. Data is stored/retrieved from **SQLite3**
+5. `views.py` → sends data to HTML (`templates`)
+6. HTML is displayed to the user
+
+---
+
+## 🧠 Simple Diagram
+
+```
+User → URL → urls.py → views.py → models.py → Database
+                           ↓
+                       templates (HTML)
+```
+
+--- 

@@ -1,0 +1,131 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-5 bg-light-subtle min-vh-100">
+    <div class="container" style="max-width: 900px;">
+
+        <!-- BACK LINK -->
+        <a href="{% url 'profile_view' %}" class="text-decoration-none text-muted mb-4 d-inline-flex align-items-center hover-arrow fw-semibold small">
+            <i class="bi bi-arrow-left me-2"></i> Back to Profile
+        </a>
+
+        <!-- PAGE HEADER -->
+        <div class="mb-5">
+            <h1 class="fw-bold text-dark display-6 mb-2">
+                <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>SOS Alert History
+            </h1>
+            <p class="text-muted lead mb-0">View all emergency SOS alerts you've triggered.</p>
+        </div>
+
+        <!-- STATS CARD -->
+        <div class="row g-3 mb-5">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm rounded-4 bg-danger text-white">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="text-white-50 small fw-bold text-uppercase mb-1">Total SOS Alerts</h6>
+                                <h2 class="fw-bold mb-0">{{ total_sos_count }}</h2>
+                            </div>
+                            <div class="bg-white bg-opacity-25 p-3 rounded-circle">
+                                <i class="bi bi-exclamation-lg fs-4 text-white"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ALERTS LIST -->
+        {% if sos_alerts %}
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead class="bg-light table-light border-top">
+                                <tr>
+                                    <th class="px-4 py-3 small fw-bold text-uppercase text-muted">Date & Time</th>
+                                    <th class="px-4 py-3 small fw-bold text-uppercase text-muted">Contact Notified</th>
+                                    <th class="px-4 py-3 small fw-bold text-uppercase text-muted">Relationship</th>
+                                    <th class="px-4 py-3 small fw-bold text-uppercase text-muted">Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for alert in sos_alerts %}
+                                <tr class="border-bottom">
+                                    <td class="px-4 py-3">
+                                        <div class="fw-semibold text-dark">{{ alert.timestamp|date:"M d, Y" }}</div>
+                                        <div class="small text-muted">{{ alert.timestamp|time:"H:i:s" }}</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <div class="fw-semibold text-dark">{{ alert.emergency_contact.name }}</div>
+                                        <div class="small text-muted">{{ alert.emergency_contact.phone_number }}</div>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        <span class="badge bg-info text-dark rounded-pill fw-semibold">
+                                            {{ alert.emergency_contact.relationship }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">
+                                        {% if alert.status == 'SENT' %}
+                                            <span class="badge bg-success rounded-pill fw-semibold">
+                                                <i class="bi bi-check-circle me-1"></i>{{ alert.get_status_display }}
+                                            </span>
+                                        {% elif alert.status == 'PENDING' %}
+                                            <span class="badge bg-warning rounded-pill fw-semibold">
+                                                <i class="bi bi-hourglass-split me-1"></i>{{ alert.get_status_display }}
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-danger rounded-pill fw-semibold">
+                                                <i class="bi bi-x-circle me-1"></i>{{ alert.get_status_display }}
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="card border-0 shadow-sm rounded-4 bg-white text-center py-5">
+                <div class="card-body">
+                    <div class="mb-4">
+                        <i class="bi bi-info-circle-fill text-muted" style="font-size: 4rem; opacity: 0.5;"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-2">No SOS Alerts Recorded</h5>
+                    <p class="text-muted mb-0">You haven't triggered any emergency SOS alerts yet. Hopefully you won't need to!</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <!-- INSTRUCTIONS CARD -->
+        <div class="card border-0 shadow-sm rounded-4 bg-info-subtle mt-5 mb-5">
+            <div class="card-body p-4">
+                <h6 class="fw-bold text-dark mb-3">
+                    <i class="bi bi-lightbulb-fill text-warning me-2"></i>How to Use SOS
+                </h6>
+                <ul class="mb-0 ps-4">
+                    <li class="mb-2"><strong>Set Emergency Contact:</strong> Go to your profile and add an emergency contact, then mark them as primary.</li>
+                    <li class="mb-2"><strong>Trigger SOS:</strong> Click the red SOS button on your dashboard to send an immediate alert.</li>
+                    <li class="mb-2"><strong>Alert Notification:</strong> Your primary emergency contact will receive an alert with your details and location.</li>
+                    <li class="mb-0"><strong>Confirmation:</strong> This page shows all SOS alerts you've triggered and their status.</li>
+                </ul>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .hover-arrow {
+        transition: transform 0.2s ease;
+    }
+    .hover-arrow:hover {
+        transform: translateX(-5px);
+        color: var(--bs-dark) !important;
+    }
+</style>
+{% endblock %}

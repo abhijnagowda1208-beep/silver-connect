@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-5 bg-light-subtle min-vh-100">
+    <div class="container" style="max-width: 1200px;">
+
+        <!-- PROFILE HEADER -->
+        <div class="profile-banner h-200px w-100 rounded-4 shadow-sm mb-5"></div>
+        
+        <div class="card shadow-sm border-0 rounded-4 mb-5" style="overflow: visible;">
+            <div class="card-body px-5 pb-5" style="padding-top: 40px;">
+                <div class="row align-items-end mt-n5">
+
+                    <!-- PROFILE PIC -->
+                    <div class="col-lg-auto text-center text-lg-start">
+                        <div class="position-relative d-inline-block" style="padding: 12px; display: inline-block;">
+                            {% if profile.profile_photo %}
+                                <img src="{{ profile.profile_photo.url }}" class="profile-pic shadow bg-white" alt="Profile" style="border: none;">
+                            {% else %}
+                                <div class="profile-pic shadow bg-white d-flex align-items-center justify-content-center text-primary fw-bold display-4">
+                                    {{ user.username|make_list|first|upper }}
+                                </div>
+                            {% endif %}
+                            <span class="position-absolute bg-success border border-3 border-white rounded-circle" style="width: 22px; height: 22px; bottom: 0; right: 0;">
+                                <span class="visually-hidden">Active</span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- USER INFO -->
+                    <div class="col-lg text-center text-lg-start mt-4 mt-lg-0 ms-lg-3">
+                        <h1 class="fw-bold text-dark display-6 mb-1">{{ user.get_full_name|default:user.username }}</h1>
+                        <div class="d-flex align-items-center justify-content-center justify-content-lg-start gap-3 text-muted mb-3">
+                            <span><i class="bi bi-geo-alt-fill text-danger me-1"></i> {{ profile.address|default:"Add Location" }}</span>
+                            <span><i class="bi bi-calendar-check-fill text-primary me-1"></i> Member since {{ profile.member_since_year }}</span>
+                        </div>
+                        {% if profile.bio %}
+                            <p class="text-secondary mb-0 lead fs-6" style="max-width: 600px;">{{ profile.bio }}</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- ACTION BUTTONS -->
+                    <div class="col-lg-auto text-center text-lg-end mt-4 mt-lg-0">
+                        <a href="{% url 'edit_profile' %}" class="btn btn-outline-primary rounded-pill px-4 fw-bold shadow-sm hover-scale">
+                            <i class="bi bi-pencil-square me-2"></i>Edit Profile
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD CARDS -->
+        <div class="row g-4">
+
+            <!-- MEDICAL ID -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100 rounded-4 card-hover-effect">
+                    <div class="card-header bg-white border-0 py-4 px-4">
+                        <h5 class="fw-bold mb-0 text-dark d-flex align-items-center">
+                            <i class="bi bi-person-vcard text-primary me-2 fs-4"></i> Medical ID
+                        </h5>
+                    </div>
+                    <div class="card-body px-4 pb-4 pt-0">
+                        <div class="p-3 bg-light rounded-3 mb-3 d-flex justify-content-between align-items-center">
+                            <span class="text-muted fw-bold small text-uppercase">Blood Type</span>
+                            <span class="badge bg-danger text-white fs-6 rounded-pill px-3">{{ profile.blood_type|default:"N/A" }}</span>
+                        </div>
+
+                        <div class="row g-3">
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded-3 h-100">
+                                    <small class="text-muted text-uppercase fw-bold d-block mb-1">Age</small>
+                                    <span class="fs-4 fw-bold text-dark">{{ profile.age }}</span> <span class="small text-muted">Years</span>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <div class="p-3 bg-light rounded-3 h-100">
+                                    <small class="text-muted text-uppercase fw-bold d-block mb-1">DOB</small>
+                                    <span class="fw-bold text-dark">{{ profile.date_of_birth|date:"M d, Y"|default:"--" }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RECORDS DASHBOARD -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 bg-dark text-white rounded-4 overflow-hidden mb-4 position-relative hover-lift" onclick="location.href='{% url 'upload_record' %}'" style="cursor: pointer;">
+                    <div class="card-body p-4 position-relative z-1">
+                        <div class="d-flex justify-content-between align-items-start">
+                            <div>
+                                <h6 class="text-white-50 text-uppercase fw-bold mb-2">My Records</h6>
+                                <h2 class="display-4 fw-bold mb-0">{{ doc_count }}</h2>
+                                <span class="badge bg-white text-dark mt-2">
+                                    <i class="bi bi-cloud-upload-fill me-1"></i> Upload New
+                                </span>
+                            </div>
+                            <div class="bg-white bg-opacity-10 p-3 rounded-circle text-info">
+                                <i class="bi bi-folder-check fs-1"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="position-absolute bottom-0 end-0 bg-gradient-primary rounded-circle opacity-25" style="width: 150px; height: 150px; transform: translate(30%, 30%);"></div>
+                </div>
+
+                <div class="card shadow-sm border-0 rounded-4 overflow-hidden h-auto">
+                    <div class="card-body p-4">
+                        <h6 class="fw-bold text-dark mb-3">Record Distribution</h6>
+                        {% if doc_chart %}
+                            <div class="text-center">
+                                <img src="data:image/png;base64,{{ doc_chart }}" class="img-fluid rounded" alt="Data Chart">
+                            </div>
+                        {% else %}
+                            <div class="text-center py-4 text-muted">
+                                <i class="bi bi-pie-chart fs-1 opacity-25 mb-2 d-block"></i>
+                                <small>Upload records to see analytics.</small>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- SAFETY NETWORK -->
+            <div class="col-lg-4">
+                <div class="card shadow-sm border-0 h-100 rounded-4 card-hover-effect">
+                    <div class="card-header bg-white border-0 py-4 px-4 d-flex justify-content-between align-items-center gap-2">
+                        <h5 class="fw-bold mb-0 text-dark">Safety Network</h5>
+                        <div class="d-flex gap-2">
+                            <a href="{% url 'sos_history' %}" class="btn btn-sm btn-light rounded-pill fw-bold text-secondary" title="View SOS History">
+                                <i class="bi bi-clock-history me-1"></i>History
+                            </a>
+                            <a href="{% url 'manage_emergency_contacts' %}" class="btn btn-sm btn-light rounded-pill fw-bold text-secondary">Manage</a>
+                        </div>
+                    </div>
+                    <div class="card-body px-4 pb-4 pt-0">
+                        
+                        <div class="alert alert-danger bg-danger-subtle border-0 rounded-4 p-3 mb-4">
+                            <div class="d-flex">
+                                <div class="bg-danger text-white rounded-circle p-2 me-3 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">
+                                    <i class="bi bi-shield-exclamation-fill"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-danger mb-1">SOS Active</h6>
+                                    <p class="small text-danger opacity-75 mb-0 lh-sm">Pressing Emergency will alert your primary contact immediately.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h6 class="text-muted small fw-bold text-uppercase mb-3">Primary Contact</h6>
+                        
+                        {% if profile.user.emergency_contacts.all %}
+                            {% for contact in profile.user.emergency_contacts.all %}
+                                {% if contact.is_primary %}
+                                <div class="d-flex align-items-center p-3 border rounded-4 bg-white shadow-sm mb-2">
+                                    <div class="rounded-circle bg-danger text-white d-flex align-items-center justify-content-center fw-bold fs-5 me-3" style="width: 50px; height: 50px;">
+                                        {{ contact.name|make_list|first|upper }}
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold text-dark mb-0">{{ contact.name }}</h6>
+                                        <small class="text-muted">{{ contact.relationship }} &bull; {{ contact.phone_number }}</small>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <div class="text-center py-3 border border-dashed rounded-3">
+                                <small class="text-muted">No primary contact set.</small>
+                                <a href="{% url 'manage_emergency_contacts' %}" class="d-block fw-bold text-danger text-decoration-none small mt-1">Add Now</a>
+                            </div>
+                        {% endif %}
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* --- Layout Utilities --- */
+    .bg-light-subtle { background-color: #f8f9fa; }
+    
+    /* --- Profile Header --- */
+    .profile-banner { height: 200px; background: linear-gradient(120deg, #20c997 0%, #0d6efd 100%); }
+    .profile-pic { width: 160px; height: 160px; object-fit: cover; border-radius: 50%; }
+    .mt-n5 { margin-top: -5rem; }
+
+    /* --- Animations & Hover Effects --- */
+    .hover-scale { transition: transform 0.2s; }
+    .hover-scale:hover { transform: scale(1.05); }
+    .hover-lift { transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 1rem 3rem rgba(0,0,0,.15) !important; }
+    .card-hover-effect { transition: box-shadow 0.2s ease; }
+    .card-hover-effect:hover { box-shadow: 0 1rem 3rem rgba(0,0,0,.08) !important; }
+
+    /* --- Gradients --- */
+    .bg-gradient-primary { background: radial-gradient(circle, rgba(13,202,240,1) 0%, rgba(13,110,253,0) 70%); }
+</style>
+{% endblock %}

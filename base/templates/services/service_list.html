@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-5 bg-light-subtle min-vh-100">
+    <div class="container" style="max-width: 1200px;">
+
+        <!-- PAGE HEADER -->
+        <div class="d-flex align-items-center justify-content-between mb-5">
+            <div>
+                <h2 class="fw-bold text-dark text-capitalize">
+                    {{ category }} Services
+                </h2>
+                <p class="text-muted mb-0">
+                    Trusted providers in your area
+                </p>
+            </div>
+
+            <a href="{% url 'services_hub' %}" class="btn btn-outline-secondary rounded-pill">
+                ← Back to Services
+            </a>
+        </div>
+
+        <!-- VENDORS LIST -->
+        <div class="row g-4">
+            {% for vendor in vendors %}
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 hover-lift bg-white">
+                    <div class="row g-0 h-100">
+
+                        <!-- IMAGE -->
+                        <div class="col-sm-4 position-relative" style="min-height: 200px;">
+                            {% if vendor.image %}
+                                <img src="{{ vendor.image.url }}" class="w-100 h-100 object-fit-cover">
+                            {% else %}
+                                <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center text-muted">
+                                    <i class="bi bi-shop fs-1"></i>
+                                </div>
+                            {% endif %}
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge bg-white text-dark shadow-sm fw-bold">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>{{ vendor.rating }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- DETAILS -->
+                        <div class="col-sm-8">
+                            <div class="card-body p-4 h-100 d-flex flex-column justify-content-between">
+
+                                <div>
+                                    <span class="badge bg-primary-subtle text-primary rounded-pill mb-2">
+                                        {{ vendor.get_category_display }}
+                                    </span>
+
+                                    <h5 class="fw-bold text-dark mb-2">
+                                        {{ vendor.name }}
+                                    </h5>
+
+                                    <p class="small text-muted mb-3">
+                                        {{ vendor.delivery_info }}
+                                    </p>
+                                </div>
+
+                                <!-- CONTACT -->
+                                <div class="pt-3 border-top">
+                                    {% if vendor.phone_contact %}
+                                        <div class="mb-3">
+                                            <small class="text-muted d-block mb-2">
+                                                <i class="bi bi-telephone me-1"></i>{{ vendor.phone_contact }}
+                                            </small>
+                                        </div>
+                                        
+                                        <!-- CALL OPTIONS -->
+                                        <div class="d-flex gap-2">
+                                            <!-- Phone Call -->
+                                            <a href="tel:{{ vendor.phone_contact }}" 
+                                               onclick="logCall({{ vendor.id }}, '{{ vendor.phone_contact }}', 'PHONE_CALL')"
+                                               class="btn btn-success btn-sm rounded-pill flex-grow-1 fw-bold shadow-sm px-2" 
+                                               title="Make a phone call">
+                                                <i class="bi bi-telephone-fill me-1"></i> Call
+                                            </a>
+                                            
+                                            <!-- WhatsApp -->
+                                            <a href="https://wa.me/{{ vendor.phone_contact|slice:'3:' }}?text=Hello" 
+                                               target="_blank" 
+                                               onclick="logCall({{ vendor.id }}, '{{ vendor.phone_contact }}', 'WHATSAPP')"
+                                               class="btn btn-outline-success btn-sm rounded-pill fw-bold shadow-sm px-2" 
+                                               title="Send a WhatsApp message">
+                                                <i class="bi bi-whatsapp"></i>
+                                            </a>
+                                            
+                                            <!-- SMS -->
+                                            <a href="sms:{{ vendor.phone_contact }}" 
+                                               onclick="logCall({{ vendor.id }}, '{{ vendor.phone_contact }}', 'SMS')"
+                                               class="btn btn-outline-info btn-sm rounded-pill fw-bold shadow-sm px-2" 
+                                               title="Send an SMS message">
+                                                <i class="bi bi-chat-dots-fill"></i>
+                                            </a>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small d-flex align-items-center">
+                                            <i class="bi bi-exclamation-triangle me-1"></i> No contact info available
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <h5 class="text-muted">
+                    No providers found in this category.
+                </h5>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .hover-lift {
+        transition: all 0.3s ease;
+    }
+    .hover-lift:hover {
+        transform: translateY(-4px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.12) !important;
+    }
+</style>
+
+<script>
+    function logCall(vendorId, phoneNumber, callType) {
+        // Send call log to server
+        fetch(`/call/log/${vendorId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: `call_type=${callType}&phone_number=${phoneNumber}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Call logged:', data.message);
+            }
+        })
+        .catch(error => console.error('Error logging call:', error));
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="padding:40px">
+    <h1>{{ event.title }}</h1>
+    <p><strong>Category:</strong> {{ event.get_category_display }}</p>
+    <p><strong>Date:</strong> {{ event.start_time }}</p>
+    <p>{{ event.description }}</p>
+
+    <a href="{% url 'community_feed' %}">⬅ Back to events</a>
+</div>
+{% endblock %}

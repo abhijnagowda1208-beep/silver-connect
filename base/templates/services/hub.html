@@ -1,0 +1,245 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid py-5 bg-light-subtle min-vh-100">
+    <div class="container" style="max-width: 1200px;">
+
+        <!-- PAGE HEADER -->
+        <div class="text-center mb-5">
+            <h1 class="fw-bold text-dark display-5 ls-tight mb-2">Services Directory</h1>
+            <p class="text-muted lead" style="max-width: 600px; margin: 0 auto;">
+                Connect with trusted providers for groceries, medical care, transport, and home assistance.
+            </p>
+        </div>
+
+        <!-- SERVICE CATEGORIES -->
+        <div class="row g-4 mb-5">
+            {% comment %} Example Category Card {% endcomment %}
+            <div class="col-6 col-md-3">
+    <a href="{% url 'service_list' 'medical' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 text-center py-4 bg-white hover-lift cursor-pointer card-hover-border-warning transition-all">
+                    <div class="icon-box bg-warning-subtle text-warning mx-auto rounded-circle mb-3 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <i class="bi bi-basket2-fill fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Medical</h5>
+                    <small class="text-muted">Immediate Requirements</small>
+                </div>
+    </a>        
+</div>
+
+           <div class="col-6 col-md-3">
+    <a href="{% url 'service_list' 'grocery' %}" class="text-decoration-none">
+        <div class="card border-0 shadow-sm rounded-4 h-100 text-center py-4 bg-white hover-lift card-hover-border-warning transition-all">
+            <div class="icon-box bg-warning-subtle text-warning mx-auto rounded-circle mb-3 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                <i class="bi bi-basket2-fill fs-2"></i>
+            </div>
+            <h5 class="fw-bold text-dark mb-1">Grocery</h5>
+            <small class="text-muted">Fresh Essentials</small>
+        </div>
+    </a>
+</div>
+
+            <div class="col-6 col-md-3">
+    <a href="{% url 'service_list' 'transport' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 text-center py-4 bg-white hover-lift cursor-pointer card-hover-border-success transition-all">
+                    <div class="icon-box bg-success-subtle text-success mx-auto rounded-circle mb-3 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <i class="bi bi-taxi-front-fill fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Transport</h5>
+                    <small class="text-muted">Rides & Mobility</small>
+                </div>
+     </a>        
+</div>
+
+            <div class="col-6 col-md-3">
+    <a href="{% url 'service_list' 'home-care' %}" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 text-center py-4 bg-white hover-lift cursor-pointer card-hover-border-primary transition-all">
+                    <div class="icon-box bg-primary-subtle text-primary mx-auto rounded-circle mb-3 d-flex align-items-center justify-content-center" style="width: 70px; height: 70px;">
+                        <i class="bi bi-house-heart-fill fs-2"></i>
+                    </div>
+                    <h5 class="fw-bold text-dark mb-1">Home Care</h5>
+                    <small class="text-muted">Help at Home</small>
+                </div>
+            </div>
+        </a>
+    </div>
+
+        <!-- TOP PROVIDERS HEADER -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+            <h4 class="fw-bold text-dark mb-0">Top Rated Providers</h4>
+            <div class="dropdown">
+                <button class="btn btn-white border shadow-sm rounded-pill px-3 fw-bold small dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                    Sort by: Recommended
+                </button>
+                <ul class="dropdown-menu border-0 shadow rounded-3">
+                    <li><a class="dropdown-item" href="#">Rating (High to Low)</a></li>
+                    <li><a class="dropdown-item" href="#">Distance</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- VENDORS LIST -->
+        <div class="row g-4">
+            {% for vendor in vendors %}
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm rounded-4 overflow-hidden h-100 hover-lift bg-white">
+                    <div class="row g-0 h-100">
+
+                        <!-- IMAGE / RATING -->
+                        <div class="col-sm-4 position-relative" style="min-height: 200px;">
+                            {% if vendor.image %}
+                                <img src="{{ vendor.image.url }}" class="w-100 h-100 object-fit-cover absolute-fill" alt="{{ vendor.name }}">
+                            {% else %}
+                                <div class="w-100 h-100 bg-light d-flex align-items-center justify-content-center text-muted absolute-fill">
+                                    <i class="bi bi-shop fs-1"></i>
+                                </div>
+                            {% endif %}
+                            <div class="position-absolute top-0 start-0 m-2">
+                                <span class="badge bg-white text-dark shadow-sm fw-bold">
+                                    <i class="bi bi-star-fill text-warning me-1"></i>{{ vendor.rating }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- DETAILS -->
+                        <div class="col-sm-8">
+                            <div class="card-body p-4 h-100 d-flex flex-column justify-content-between">
+
+                                <div>
+                                    <div class="d-flex justify-content-between align-items-start mb-2">
+                                        <span class="badge bg-secondary bg-opacity-10 text-secondary rounded-pill px-2 py-1" style="font-size: 0.7rem;">
+                                            {{ vendor.get_category_display }}
+                                        </span>
+                                        <small class="text-success fw-bold"><i class="bi bi-check-circle-fill me-1"></i>Verified</small>
+                                    </div>
+                                    <h5 class="fw-bold text-dark mb-1">{{ vendor.name }}</h5>
+
+                                    <ul class="list-unstyled small text-muted mt-3 mb-0">
+                                        <li class="mb-2 d-flex align-items-center">
+                                            <i class="bi bi-clock text-primary me-2"></i> {{ vendor.delivery_info }}
+                                        </li>
+                                        <li class="mb-2 d-flex align-items-center">
+                                            <i class="bi bi-geo-alt text-danger me-2"></i> Serving your area
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <!-- CONTACT BUTTON -->
+                                <div class="mt-4 pt-3 border-top border-light">
+                                    {% if vendor.phone_contact %}
+                                        <div class="text-dark fw-bold small mb-3">
+                                            <i class="bi bi-telephone me-1"></i>{{ vendor.phone_contact }}
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <!-- Phone Call -->
+                                            <a href="tel:{{ vendor.phone_contact }}" 
+                                               onclick="logCall({{ vendor.id }}, '{{ vendor.phone_contact }}', 'PHONE_CALL')"
+                                               class="btn btn-success btn-sm rounded-pill flex-grow-1 fw-bold shadow-sm" 
+                                               title="Make a phone call">
+                                                <i class="bi bi-telephone-fill me-1"></i> Call
+                                            </a>
+                                            
+                                            <!-- WhatsApp -->
+                                            <a href="https://wa.me/{{ vendor.phone_contact|slice:'3:' }}?text=Hello" 
+                                               target="_blank" 
+                                               onclick="logCall({{ vendor.id }}, '{{ vendor.phone_contact }}', 'WHATSAPP')"
+                                               class="btn btn-outline-success btn-sm rounded-pill fw-bold shadow-sm px-2" 
+                                               title="Send a WhatsApp message">
+                                                <i class="bi bi-whatsapp"></i>
+                                            </a>
+                                            
+                                            <!-- SMS -->
+                                            <a href="sms:{{ vendor.phone_contact }}" 
+                                               onclick="logCall({{ vendor.id }}, '{{ vendor.phone_contact }}', 'SMS')"
+                                               class="btn btn-outline-info btn-sm rounded-pill fw-bold shadow-sm px-2" 
+                                               title="Send an SMS message">
+                                                <i class="bi bi-chat-dots-fill"></i>
+                                            </a>
+                                        </div>
+                                    {% else %}
+                                        <span class="text-muted small d-flex align-items-center">
+                                            <i class="bi bi-exclamation-triangle me-1"></i> No contact info available
+                                        </span>
+                                    {% endif %}
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <div class="bg-white rounded-circle p-4 d-inline-block shadow-sm mb-3">
+                    <i class="bi bi-search display-4 text-muted opacity-25"></i>
+                </div>
+                <h5 class="text-muted">No providers found in this category.</h5>
+            </div>
+            {% endfor %}
+        </div>
+
+    </div>
+</div>
+
+<style>
+    /* --- Layout Utilities --- */
+    .bg-light-subtle { background-color: #f8f9fa; }
+    .ls-tight { letter-spacing: -0.02em; }
+    .absolute-fill { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .object-fit-cover { object-fit: cover; }
+
+    /* --- Interactive Cards --- */
+    .hover-lift { transition: transform 0.2s, box-shadow 0.2s; }
+    .hover-lift:hover { transform: translateY(-5px); box-shadow: 0 1rem 3rem rgba(0,0,0,.1) !important; }
+    .cursor-pointer { cursor: pointer; }
+    .transition-all { transition: all 0.3s ease; }
+
+    /* --- Hover Border Colors for Categories --- */
+    .card-hover-border-warning:hover { border: 1px solid #ffc107 !important; }
+    .card-hover-border-info:hover { border: 1px solid #0dcaf0 !important; }
+    .card-hover-border-success:hover { border: 1px solid #198754 !important; }
+    .card-hover-border-primary:hover { border: 1px solid #0d6efd !important; }
+
+    /* --- Buttons --- */
+    .btn-white { background-color: white; color: #212529; }
+    .btn-white:hover { background-color: #f8f9fa; }
+</style>
+
+<script>
+    function logCall(vendorId, phoneNumber, callType) {
+        // Send call log to server
+        fetch(`/call/log/${vendorId}/`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': getCookie('csrftoken'),
+            },
+            body: `call_type=${callType}&phone_number=${phoneNumber}`
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Call logged:', data.message);
+            }
+        })
+        .catch(error => console.error('Error logging call:', error));
+    }
+
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+</script>
+{% endblock %}

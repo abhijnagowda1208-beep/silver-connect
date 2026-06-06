@@ -1,0 +1,283 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="dashboard-frame">
+
+    <div class="dashboard-container">
+
+        <!-- HEADER -->
+        <div class="d-flex align-items-center justify-content-between mb-5 flex-wrap">
+            <div>
+                <h1 class="display-5 fw-bold text-dark mb-1 ls-tight">
+                    Good Morning, {{ user.first_name|default:user.username }}!
+                </h1>
+                <p class="text-muted lead mb-0">Here's what's happening today.</p>
+            </div>
+
+            <div class="d-flex align-items-center bg-white p-2 pe-4 rounded-pill shadow-sm border">
+                <div class="position-relative me-3">
+                    {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" class="rounded-circle" width="48" height="48" style="object-fit: cover;">
+                    {% else %}
+                        <div class="rounded-circle bg-secondary text-white d-flex align-items-center justify-content-center fw-bold" style="width:48px;height:48px;">
+                            {{ user.username|make_list|first|upper }}
+                        </div>
+                    {% endif %}
+                    <span class="position-absolute top-0 start-100 translate-middle p-1 bg-success border border-light rounded-circle"></span>
+                </div>
+                <div>
+                    <h6 class="fw-bold text-dark mb-0 small text-uppercase ls-1">Member</h6>
+                    <small class="text-success fw-bold" style="font-size:0.75rem;">Online</small>
+                </div>
+            </div>
+        </div>
+
+        <!-- LIVE MEETING ALERT -->
+        {% if active_meeting %}
+        <div class="alert-live-meeting d-flex align-items-center justify-content-between p-4 mb-5 position-relative overflow-hidden rounded-4 shadow-lg">
+            <div class="d-flex align-items-center z-1 position-relative">
+                <div class="live-icon bg-white text-warning p-3 rounded-circle me-4 shadow-sm">
+                    <i class="bi bi-camera-video-fill fs-3"></i>
+                </div>
+                <div>
+                    <h4 class="fw-bold text-dark mb-1">Live Now: {{ active_meeting.title }}</h4>
+                    <p class="mb-0 text-dark opacity-75">The community session has started. Click to join.</p>
+                </div>
+            </div>
+            <a href="{{ active_meeting.meeting_url }}" target="_blank" class="btn btn-dark rounded-pill px-5 py-2 fw-bold shadow-lg hover-scale z-1 position-relative">
+                Join Call <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+            <div class="position-absolute top-0 end-0 h-100 w-50 bg-gradient-warning opacity-25" style="transform: skewX(-20deg) translateX(100px);"></div>
+        </div>
+        {% endif %}
+
+        <!-- DASHBOARD ROW -->
+        <div class="row g-4">
+
+            <!-- VOICE ASSISTANT CARD -->
+            <div class="col-lg-7">
+                <div class="card voice-card shadow-lg rounded-5 h-100 overflow-hidden text-center position-relative bg-primary text-white">
+                    <div class="card-body py-5 d-flex flex-column justify-content-center align-items-center position-relative z-2">
+
+                        <div class="mb-4">
+                            <span class="badge voice-badge bg-white bg-opacity-20 border border-white border-opacity-25 px-3 py-2 fw-normal ls-1">
+                                AI ASSISTANT
+                            </span>
+                        </div>
+
+                        <h3 class="fw-light mb-4" id="mic-status-text">How can I help you today?</h3>
+
+                        <button id="voice-btn" class="btn btn-light rounded-circle p-0 shadow-lg d-inline-flex align-items-center justify-content-center voice-btn-lg mb-4">
+                            <i id="mic-icon" class="bi bi-mic-fill text-primary display-4"></i>
+                            <div class="pulse-ring"></div>
+                        </button>
+
+                        <div class="voice-result-container bg-white bg-opacity-10 rounded-pill px-5 py-3 border border-white border-opacity-25" style="min-width:60%;">
+                            <p id="voice-result" class="mb-0 fs-5 fst-italic text-white">
+                                Tap microphone to speak...
+                            </p>
+                        </div>
+
+                        <div class="mt-4 text-white-50 small d-flex gap-3 flex-wrap">
+                            <span><i class="bi bi-chat-quote me-1"></i> "Open Wellness"</span>
+                            <span>&bull;</span>
+                            <span><i class="bi bi-chat-quote me-1"></i> "Call Emergency"</span>
+                        </div>
+
+                        <form id="voice-form" style="display:none;">{% csrf_token %}</form>
+                    </div>
+
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-voice"></div>
+                    <div class="position-absolute top-50 start-50 translate-middle rounded-circle bg-white opacity-05 circle-1"></div>
+                    <div class="position-absolute top-50 start-50 translate-middle rounded-circle bg-white opacity-05 circle-2"></div>
+                </div>
+            </div>
+
+            <!-- DASHBOARD CARDS -->
+            <div class="col-lg-5 d-flex flex-column gap-4 h-100">
+
+                <!-- DAILY STEPS -->
+                <div class="card steps-card border-0 shadow-sm rounded-4 bg-white">
+                    <div class="card-body p-4">
+                        <div class="d-flex justify-content-between align-items-end mb-3">
+                            <div>
+                                <h6 class="text-uppercase text-muted fw-bold small ls-1 mb-1">Daily Steps</h6>
+                                <h2 class="fw-bold text-dark mb-0">{{ wellness_progress }}% 
+                                    <span class="fs-6 text-muted fw-normal">of goal</span>
+                                </h2>
+                            </div>
+                            <div class="icon-box bg-success-subtle text-success rounded-circle d-flex align-items-center justify-content-center" style="width:50px;height:50px;">
+                                <i class="bi bi-activity fs-4"></i>
+                            </div>
+                        </div>
+                        <div class="progress bg-light rounded-pill" style="height:8px;">
+                            <div class="progress-bar bg-success rounded-pill" role="progressbar" style="width: {{ wellness_progress }}%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row g-3 flex-grow-1">
+
+                    <!-- HEALTH CARD -->
+                    <div class="col-6">
+                        <a href="{% url 'wellness_tracker' %}" class="card card-mini border-0 shadow-sm h-100 rounded-4 hover-lift text-decoration-none bg-white">
+                            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                <div class="icon-box bg-info-subtle text-info rounded-3 p-3 mb-3">
+                                    <i class="bi bi-heart-pulse-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0">Health</h6>
+                                    <small class="text-muted">Track Vitals</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- EVENTS CARD -->
+                    <div class="col-6">
+                        <a href="{% url 'event_list' %}" class="card card-mini border-0 shadow-sm h-100 rounded-4 hover-lift text-decoration-none bg-white">
+                            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                <div class="icon-box bg-warning-subtle text-warning rounded-3 p-3 mb-3">
+                                    <i class="bi bi-calendar-event-fill fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0">Events</h6>
+                                    <small class="text-muted">Community</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- MARKETPLACE CARD -->
+                    <div class="col-6">
+                        <a href="{% url 'marketplace_list' %}" class="card card-mini border-0 shadow-sm h-100 rounded-4 hover-lift text-decoration-none bg-white">
+                            <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                <div class="icon-box bg-purple-subtle text-purple rounded-3 p-3 mb-3">
+                                    <i class="bi bi-shop fs-4"></i>
+                                </div>
+                                <div>
+                                    <h6 class="fw-bold text-dark mb-0">Market</h6>
+                                    <small class="text-muted">Buy & Sell</small>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+
+                    <!-- SOS CARD -->
+                    <div class="col-6">
+                        <form action="{% url 'trigger_emergency' %}" method="POST" class="h-100">
+                            {% csrf_token %}
+                            <button type="submit" class="card card-mini border-0 shadow-sm h-100 w-100 rounded-4 hover-lift bg-danger text-white text-start p-0" onclick="return confirm('Send SOS Alert?');">
+                                <div class="card-body p-4 d-flex flex-column justify-content-between">
+                                    <div class="icon-box bg-white text-danger rounded-circle p-3 mb-3 shadow-sm">
+                                        <i class="bi bi-exclamation-lg fs-4 fw-bold"></i>
+                                    </div>
+                                    <div>
+                                        <h6 class="fw-bold mb-0">SOS</h6>
+                                        <small class="text-white-50">Emergency</small>
+                                    </div>
+                                </div>
+                            </button>
+                        </form>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const voiceBtn = document.getElementById('voice-btn');
+    const micIcon = document.getElementById('mic-icon');
+    const statusText = document.getElementById('mic-status-text');
+    const resultText = document.getElementById('voice-result');
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+
+    if (!('webkitSpeechRecognition' in window)) {
+        resultText.textContent = "Voice not supported in this browser.";
+        return;
+    }
+
+    const recognition = new webkitSpeechRecognition();
+    recognition.continuous = false;
+    recognition.lang = 'en-US';
+    recognition.interimResults = false;
+
+    voiceBtn.addEventListener('click', () => {
+        recognition.start();
+        statusText.textContent = "Listening...";
+        voiceBtn.classList.add('pulse-active');
+        micIcon.classList.remove('text-primary');
+        micIcon.classList.add('text-danger');
+    });
+
+    recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        resultText.textContent = `"${transcript}"`;
+        statusText.textContent = "Processing...";
+        const formData = new FormData();
+        formData.append('command', transcript);
+        formData.append('csrfmiddlewaretoken', csrfToken);
+
+        fetch("{% url 'log_voice_command' %}", { method:'POST', body: formData })
+        .then(r=>r.json()).then(data=>{
+            if(data.status==='success' && data.redirect_url){
+                statusText.textContent="Redirecting...";
+                setTimeout(()=>{window.location.href=data.redirect_url;},1000);
+            } else {
+                statusText.textContent="Command logged.";
+                setTimeout(()=>{statusText.textContent="How can I help you today?";},2000);
+            }
+        }).catch(err=>{statusText.textContent="Error processing command."; console.error(err);});
+    };
+
+    recognition.onend = function() {
+        voiceBtn.classList.remove('pulse-active');
+        micIcon.classList.add('text-primary');
+        micIcon.classList.remove('text-danger');
+    };
+});
+</script>
+
+<style>
+/* --- Layout Utilities --- */
+.dashboard-frame { background:#f8f9fa; min-height:100vh; padding:40px 0; }
+.dashboard-container { max-width:1200px; margin:auto; padding:0 20px; }
+
+.ls-tight { letter-spacing:-0.02em; }
+.ls-1 { letter-spacing:1px; }
+.ls-2 { letter-spacing:2px; }
+
+/* --- Voice Card --- */
+.voice-card { min-height:400px; }
+.bg-gradient-voice { background: linear-gradient(135deg,#0d6efd 0%,#0dcaf0 100%); }
+.voice-btn-lg { width:100px;height:100px; transition: transform 0.2s ease; }
+.voice-btn-lg:hover { transform: scale(1.05); }
+.pulse-active { animation:pulse-ring 1.5s infinite; }
+@keyframes pulse-ring {0%{box-shadow:0 0 0 0 rgba(255,255,255,0.7);}70%{box-shadow:0 0 0 20px rgba(255,255,255,0);}100%{box-shadow:0 0 0 0 rgba(255,255,255,0);}}
+
+/* --- Decorative Circles --- */
+.circle-1{width:300px;height:300px;animation:float 6s ease-in-out infinite;}
+.circle-2{width:500px;height:500px;animation:float 8s ease-in-out infinite reverse;}
+@keyframes float {0%{transform:translate(-50%,-50%) translateY(0);}50%{transform:translate(-50%,-50%) translateY(-20px);}100%{transform:translate(-50%,-50%) translateY(0);}}
+
+/* --- Gradient / Subtle Colors --- */
+.bg-purple-subtle{background-color:#e0cffc;color:#6f42c1;}
+.bg-success-subtle{background-color:#d1f7dc;color:#198754;}
+.bg-info-subtle{background-color:#cff4fc;color:#0dcaf0;}
+.bg-warning-subtle{background-color:#fff3cd;color:#ffc107;}
+.bg-gradient-warning{background:linear-gradient(45deg,#ffc107,#ffca2c);}
+
+/* --- Cards / Hover --- */
+.hover-scale{transition:transform 0.2s;}
+.hover-scale:hover{transform:scale(1.05);}
+.hover-lift{transition:transform 0.2s,box-shadow 0.2s;}
+.hover-lift:hover{transform:translateY(-5px);box-shadow:0 1rem 3rem rgba(0,0,0,.1) !important;}
+</style>
+{% endblock %}

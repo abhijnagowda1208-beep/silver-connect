@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            
+            <!-- BACK LINK -->
+            <a href="{% url 'profile_view' %}" class="text-decoration-none text-muted mb-4 d-inline-flex align-items-center hover-arrow fw-semibold small">
+                <i class="bi bi-arrow-left me-2"></i> Back to Profile
+            </a>
+
+            <!-- CARD -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                
+                <!-- CARD HEADER -->
+                <div class="card-header bg-success bg-gradient text-white py-4 border-0 position-relative overflow-hidden">
+                    <div class="position-relative z-1">
+                        <h4 class="mb-1 fw-bold"><i class="bi bi-cloud-arrow-up-fill me-2"></i>Upload Record</h4>
+                        <p class="mb-0 small text-white-75">Securely store your prescriptions and reports.</p>
+                    </div>
+                    <div class="position-absolute top-50 end-0 translate-middle-y opacity-25 me-n3">
+                        <i class="bi bi-file-earmark-medical fs-1" style="font-size: 5rem !important;"></i>
+                    </div>
+                </div>
+
+                <!-- CARD BODY -->
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <form method="POST" enctype="multipart/form-data" class="needs-validation" novalidate>
+                        {% csrf_token %}
+
+                        <!-- DOCUMENT TITLE -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-secondary">Document Title</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-light border-0 text-muted ps-3">
+                                    <i class="bi bi-tag-fill"></i>
+                                </span>
+                                <input type="text" name="title" class="form-control bg-light border-0 ps-2" placeholder="e.g. Blood Test - Jan 2024" required>
+                            </div>
+                        </div>
+
+                        <!-- DOCUMENT TYPE -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-secondary mb-3">Document Type</label>
+                            <div class="row g-3">
+                                <div class="col-6">
+                                    <input type="radio" class="btn-check" name="doc_type" id="typeRecord" value="RECORD" checked>
+                                    <label class="btn btn-outline-success w-100 py-3 rounded-3 border-2 h-100 d-flex flex-column align-items-center justify-content-center gap-2 transition-all" for="typeRecord">
+                                        <i class="bi bi-file-earmark-bar-graph fs-3"></i>
+                                        <span class="fw-bold small">Medical Report</span>
+                                    </label>
+                                </div>
+                                <div class="col-6">
+                                    <input type="radio" class="btn-check" name="doc_type" id="typeRx" value="PRESCRIPTION">
+                                    <label class="btn btn-outline-primary w-100 py-3 rounded-3 border-2 h-100 d-flex flex-column align-items-center justify-content-center gap-2 transition-all" for="typeRx">
+                                        <i class="bi bi-prescription2 fs-3"></i>
+                                        <span class="fw-bold small">Prescription</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- FILE ATTACHMENT -->
+                        <div class="mb-5">
+                            <label class="form-label fw-bold small text-uppercase text-secondary">File Attachment</label>
+                            <div class="border-2 border-dashed rounded-4 p-5 text-center bg-light position-relative hover-bg-gray transition-all" id="drop-zone">
+                                <input type="file" name="file" class="position-absolute top-0 start-0 w-100 h-100 opacity-0 cursor-pointer" required onchange="updateFileName(this)">
+                                
+                                <div id="file-placeholder" class="pointer-events-none">
+                                    <div class="bg-white rounded-circle shadow-sm d-inline-flex p-3 mb-3 text-success">
+                                        <i class="bi bi-cloud-upload fs-2"></i>
+                                    </div>
+                                    <h6 class="fw-bold text-dark mb-1">Click to Upload</h6>
+                                    <p class="small text-muted mb-0">PDF, JPG, PNG (Max 5MB)</p>
+                                </div>
+                                
+                                <div id="file-preview" class="d-none">
+                                    <i class="bi bi-check-circle-fill text-success fs-1 mb-2 d-block"></i>
+                                    <span id="file-name-display" class="fw-bold text-dark"></span>
+                                    <p class="small text-muted mb-0 mt-1">Click to change file</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SUBMIT BUTTON -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success btn-lg rounded-pill shadow-lg hover-scale fw-bold">
+                                <i class="bi bi-check2-circle me-2"></i> Save Document
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+            <!-- FOOTER NOTE -->
+            <div class="text-center mt-4 d-flex align-items-center justify-content-center gap-2 text-muted small">
+                <i class="bi bi-shield-lock-fill text-success"></i>
+                <span>Your medical records are encrypted and private.</span>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+    function updateFileName(input) {
+        if (input.files && input.files.length > 0) {
+            document.getElementById('file-placeholder').classList.add('d-none');
+            document.getElementById('file-preview').classList.remove('d-none');
+            document.getElementById('file-name-display').textContent = input.files[0].name;
+            document.getElementById('drop-zone').classList.add('bg-success-subtle', 'border-success');
+        }
+    }
+</script>
+
+<style>
+    /* --- Hover & Scale Animations --- */
+    .hover-arrow { transition: transform 0.2s ease; }
+    .hover-arrow:hover { transform: translateX(-5px); color: var(--bs-dark) !important; }
+
+    .hover-scale { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .hover-scale:hover { transform: scale(1.03); }
+    
+    .transition-all { transition: all 0.2s ease-in-out; }
+
+    /* --- Form Styling --- */
+    .bg-gradient { background-image: linear-gradient(180deg,rgba(255,255,255,.15),rgba(255,255,255,0)); }
+    .border-dashed { border-style: dashed !important; border-color: #dee2e6; }
+    .cursor-pointer { cursor: pointer; }
+    .hover-bg-gray:hover { background-color: #e9ecef !important; border-color: #adb5bd !important; }
+    
+    /* Radio Buttons Custom */
+    .btn-check:checked + .btn-outline-success {
+        background-color: #d1e7dd; color: #0f5132; border-color: #198754;
+    }
+    .btn-check:checked + .btn-outline-primary {
+        background-color: #cfe2ff; color: #084298; border-color: #0d6efd;
+    }
+
+    /* Input Focus */
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(25, 135, 84, 0.15) !important; /* Green glow */
+        background-color: white;
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,148 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid min-vh-100 d-flex align-items-center bg-light-subtle py-5">
+    <div class="container" style="max-width: 1000px;">
+        
+        <div class="card border-0 shadow-lg rounded-5 overflow-hidden">
+            <div class="row g-0">
+
+                <!-- LEFT PROMO PANEL -->
+                <div class="col-lg-6 d-none d-lg-flex bg-primary bg-gradient flex-column align-items-center justify-content-center p-5 text-white text-center position-relative overflow-hidden">
+                    <div class="position-absolute top-0 start-0 w-100 h-100 bg-pattern opacity-10"></div>
+                    
+                    <div class="position-relative z-1">
+                        <div class="bg-white text-primary rounded-circle p-4 mb-4 d-inline-block shadow-sm">
+                            <i class="bi bi-heart-pulse-fill display-4"></i>
+                        </div>
+                        <h2 class="fw-bold mb-3 display-6">SilverConnect</h2>
+                        <p class="lead mb-4 opacity-75">Your daily companion for health, community, and peace of mind.</p>
+                        <a href="{% url 'signup' %}" class="btn btn-outline-light rounded-pill px-5 fw-bold hover-scale">Join Us Today</a>
+                    </div>
+                </div>
+
+                <!-- RIGHT SIGN-IN FORM -->
+                <div class="col-lg-6 bg-white p-5">
+                    <div class="d-flex align-items-center justify-content-between mb-5">
+                        <h3 class="fw-bold text-dark mb-0">Sign In</h3>
+                        <a href="/" class="text-decoration-none text-muted small d-lg-none">
+                            <i class="bi bi-arrow-left me-1"></i> Home
+                        </a>
+                    </div>
+
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ message.tags|default:'info' }} border-0 shadow-sm rounded-3 mb-4 d-flex align-items-center">
+                                <i class="bi bi-info-circle-fill me-2 fs-5"></i>
+                                {{ message }}
+                            </div>
+                        {% endfor %}
+                    {% endif %}
+
+                    <form method="post" class="needs-validation" novalidate>
+                        {% csrf_token %}
+                        
+                        {% if form.non_field_errors %}
+                            <div class="alert alert-danger border-0 rounded-3 mb-4 shadow-sm bg-danger-subtle text-danger d-flex align-items-center">
+                                <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
+                                {{ form.non_field_errors|striptags }}
+                            </div>
+                        {% endif %}
+
+                        <!-- USERNAME -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-secondary ls-1">Username</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-light border-0 text-muted ps-3">
+                                    <i class="bi bi-person fs-5"></i>
+                                </span>
+                                <input type="text" name="username" class="form-control bg-light border-0 ps-2" placeholder="Enter your username" required autofocus>
+                            </div>
+                        </div>
+
+                        <!-- PASSWORD (UPDATED) -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <label class="form-label fw-bold small text-uppercase text-secondary ls-1 mb-0">Password</label>
+                                <a href="{% url 'password_reset' %}" class="text-decoration-none text-primary small fw-semibold">Forgot?</a>
+                            </div>
+
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-light border-0 text-muted ps-3">
+                                    <i class="bi bi-lock fs-5"></i>
+                                </span>
+
+                                <input type="password" id="password" name="password"
+                                       class="form-control bg-light border-0 ps-2"
+                                       placeholder="••••••••" required>
+
+                                <span class="input-group-text bg-light border-0 text-muted pe-3"
+                                      onclick="togglePassword()" style="cursor: pointer;">
+                                    <i class="bi bi-eye" id="eyeIcon"></i>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- SUBMIT BUTTON -->
+                        <div class="d-grid mt-5">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-lg hover-scale fw-bold py-3">
+                                <span class="me-2">Sign In</span> <i class="bi bi-arrow-right"></i>
+                            </button>
+                        </div>
+                    </form>
+
+                    <div class="mt-5 text-center d-lg-none">
+                        <p class="text-muted small">
+                            New here? <a href="{% url 'signup' %}" class="text-primary fw-bold text-decoration-none">Create Account</a>
+                        </p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- FOOTER LINKS -->
+        <div class="text-center mt-4">
+            <ul class="list-inline mb-0">
+                <li class="list-inline-item"><a href="#" class="text-muted small text-decoration-none">Privacy Policy</a></li>
+                <li class="list-inline-item text-muted small">&bull;</li>
+                <li class="list-inline-item"><a href="#" class="text-muted small text-decoration-none">Terms of Service</a></li>
+                <li class="list-inline-item text-muted small">&bull;</li>
+                <li class="list-inline-item"><a href="#" class="text-muted small text-decoration-none">Help Center</a></li>
+            </ul>
+        </div>
+
+    </div>
+</div>
+
+<style>
+    .bg-light-subtle { background-color: #f8f9fa; }
+    .bg-gradient { background: linear-gradient(135deg, #0d6efd 0%, #0dcaf0 100%); }
+    .bg-pattern { background-image: radial-gradient(#ffffff 1px, transparent 1px); background-size: 20px 20px; }
+    .ls-1 { letter-spacing: 1px; }
+    .hover-scale { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .hover-scale:hover { transform: scale(1.03); }
+    .input-group:focus-within { box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important; background-color: white; }
+    .form-control:focus { background-color: white !important; box-shadow: none; }
+</style>
+
+<!-- SHOW/HIDE PASSWORD SCRIPT -->
+<script>
+function togglePassword() {
+    const passwordField = document.getElementById("password");
+    const eyeIcon = document.getElementById("eyeIcon");
+
+    if (passwordField.type === "password") {
+        passwordField.type = "text";
+        eyeIcon.classList.remove("bi-eye");
+        eyeIcon.classList.add("bi-eye-slash");
+    } else {
+        passwordField.type = "password";
+        eyeIcon.classList.remove("bi-eye-slash");
+        eyeIcon.classList.add("bi-eye");
+    }
+}
+</script>
+
+{% endblock %}

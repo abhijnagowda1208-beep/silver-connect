@@ -1,0 +1,146 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            
+            <!-- BACK LINK -->
+            <a href="{% url 'profile_view' %}" class="text-decoration-none text-muted mb-4 d-inline-flex align-items-center hover-arrow fw-semibold small">
+                <i class="bi bi-arrow-left me-2"></i> Back to Profile
+            </a>
+
+            <!-- CARD -->
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                
+                <!-- CARD HEADER -->
+                <div class="card-header bg-primary bg-gradient text-white py-4 border-0 position-relative">
+                    <div class="position-relative z-1">
+                        <h4 class="mb-1 fw-bold"><i class="bi bi-pencil-square me-2"></i>Edit Profile</h4>
+                        <p class="mb-0 small text-white-50">Update your personal details and bio.</p>
+                    </div>
+                    <div class="position-absolute top-50 end-0 translate-middle-y opacity-25 me-3">
+                        <i class="bi bi-person-gear fs-1" style="font-size: 4rem !important;"></i>
+                    </div>
+                </div>
+
+                <!-- CARD BODY -->
+                <div class="card-body p-4 p-md-5 bg-white">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+
+                        <!-- BIO -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-secondary">Bio</label>
+                            <div class="input-group shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-light border-0 text-muted ps-3 pt-3 align-items-start">
+                                    <i class="bi bi-quote fs-5"></i>
+                                </span>
+                                <textarea name="bio" class="form-control bg-light border-0 ps-2" rows="3" placeholder="Tell us a bit about yourself...">{{ profile.bio }}</textarea>
+                            </div>
+                            <div class="form-text ms-1">Keep it short and sweet.</div>
+                        </div>
+
+                        <!-- LOCATION -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-secondary">Location</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-light border-0 text-muted ps-3">
+                                    <i class="bi bi-geo-alt"></i>
+                                </span>
+                                <input type="text" name="address" class="form-control bg-light border-0 ps-2" value="{{ profile.address }}" placeholder="City, Country">
+                            </div>
+                        </div>
+
+                        <!-- DATE OF BIRTH -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-secondary">Date of Birth</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-light border-0 text-muted ps-3">
+                                    <i class="bi bi-calendar-date"></i>
+                                </span>
+                                <input type="date" name="date_of_birth" class="form-control bg-light border-0 ps-2" value="{{ profile.date_of_birth|date:'Y-m-d' }}">
+                            </div>
+                        </div>
+
+                        <!-- BLOOD TYPE -->
+                        <div class="mb-4">
+                            <label class="form-label fw-bold small text-uppercase text-secondary">Blood Type</label>
+                            <div class="input-group input-group-lg shadow-sm rounded-3 overflow-hidden">
+                                <span class="input-group-text bg-light border-0 text-muted ps-3">
+                                    <i class="bi bi-droplet-fill"></i>
+                                </span>
+                                <select name="blood_type" class="form-select bg-light border-0 ps-2">
+                                    <option value="">Select Blood Type</option>
+                                    <option value="A+" {% if profile.blood_type == 'A+' %}selected{% endif %}>A+</option>
+                                    <option value="A-" {% if profile.blood_type == 'A-' %}selected{% endif %}>A-</option>
+                                    <option value="B+" {% if profile.blood_type == 'B+' %}selected{% endif %}>B+</option>
+                                    <option value="B-" {% if profile.blood_type == 'B-' %}selected{% endif %}>B-</option>
+                                    <option value="AB+" {% if profile.blood_type == 'AB+' %}selected{% endif %}>AB+</option>
+                                    <option value="AB-" {% if profile.blood_type == 'AB-' %}selected{% endif %}>AB-</option>
+                                    <option value="O+" {% if profile.blood_type == 'O+' %}selected{% endif %}>O+</option>
+                                    <option value="O-" {% if profile.blood_type == 'O-' %}selected{% endif %}>O-</option>
+                                </select>
+                            </div>
+                            <div class="form-text ms-1">Important for emergency situations.</div>
+                        </div>
+
+                        <!-- PROFILE PHOTO -->
+                        <div class="mb-5">
+                            <label class="form-label fw-bold small text-uppercase text-secondary">Profile Photo</label>
+                            
+                            <div class="d-flex align-items-center gap-3 p-3 border rounded-4 bg-light">
+                                <div class="flex-shrink-0">
+                                    {% if profile.profile_photo %}
+                                        <img src="{{ profile.profile_photo.url }}" class="rounded-circle object-fit-cover border border-2 border-white shadow-sm" width="60" height="60" alt="Current Photo">
+                                    {% else %}
+                                        <div class="rounded-circle bg-white d-flex align-items-center justify-content-center text-muted border shadow-sm" style="width: 60px; height: 60px;">
+                                            <i class="bi bi-person fs-3"></i>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="flex-grow-1">
+                                    <input type="file" name="profile_photo" class="form-control border-0 bg-white shadow-none" id="photoInput">
+                                    <div class="form-text mt-1">Accepts JPG, PNG (Max 5MB)</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAVE BUTTON -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-primary btn-lg rounded-pill shadow-lg hover-scale fw-bold">
+                                <i class="bi bi-check2 me-2"></i> Save Changes
+                            </button>
+                        </div>
+
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<style>
+    /* --- Hover & Scale Animations --- */
+    .hover-arrow { transition: transform 0.2s ease; }
+    .hover-arrow:hover { transform: translateX(-5px); color: var(--bs-dark) !important; }
+
+    .hover-scale { transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+    .hover-scale:hover { transform: scale(1.02); }
+
+    /* --- Input Styling --- */
+    .input-group:focus-within {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.15) !important; /* Blue glow for focus */
+        background-color: white;
+    }
+
+    .object-fit-cover { object-fit: cover; }
+
+    /* --- Card Shadows --- */
+    .card-body { transition: box-shadow 0.2s ease; }
+    .card-body:hover { box-shadow: 0 0.5rem 1rem rgba(0,0,0,.05); }
+</style>
+{% endblock %}
